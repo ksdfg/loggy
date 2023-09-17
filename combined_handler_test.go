@@ -36,10 +36,10 @@ func setupLoggerWithCombinedHandler(outputStream io.Writer) {
 		outputStream, &slog.HandlerOptions{Level: slog.LevelInfo, ReplaceAttr: removeTimeAttr},
 	)
 	warnTextLogHandler := slog.NewTextHandler(
-		outputStream, &slog.HandlerOptions{Level: slog.LevelWarn, AddSource: true, ReplaceAttr: removeTimeAttr},
+		outputStream, &slog.HandlerOptions{Level: slog.LevelWarn, ReplaceAttr: removeTimeAttr},
 	)
 	errorJSONLogHandler := slog.NewJSONHandler(
-		outputStream, &slog.HandlerOptions{Level: slog.LevelError, AddSource: true, ReplaceAttr: removeTimeAttr},
+		outputStream, &slog.HandlerOptions{Level: slog.LevelError, ReplaceAttr: removeTimeAttr},
 	)
 
 	// Add attributes to each handler so that we know which logs came from which handler
@@ -110,8 +110,7 @@ func TestNewCombinedHandler_Info(t *testing.T) {
 }
 
 // TestNewCombinedHandler_Warn tests the functionality of the NewCombinedHandler function with a warn log.
-// This should output a text log, a JSON log and a text log with source from the logger set using
-// setupLoggerWithCombinedHandler.
+// This should output two text logs and a JSON log from the logger set using setupLoggerWithCombinedHandler.
 func TestNewCombinedHandler_Warn(t *testing.T) {
 	// Create a strings.Builder to capture the output
 	var outputStream strings.Builder
@@ -127,7 +126,7 @@ func TestNewCombinedHandler_Warn(t *testing.T) {
 		[]string{
 			"level=WARN msg=\"this is a warning log\" logger=debugTextLogHandler",
 			"{\"level\":\"WARN\",\"msg\":\"this is a warning log\",\"logger\":\"infoJSONLogHandler\"}",
-			"level=WARN source=/home/ksdfg/code/loggy/combined_handler_test.go:102 msg=\"this is a warning log\" logger=warnTextLogHandler\n",
+			"level=WARN msg=\"this is a warning log\" logger=warnTextLogHandler\n",
 		},
 		"\n",
 	)
@@ -135,8 +134,7 @@ func TestNewCombinedHandler_Warn(t *testing.T) {
 }
 
 // TestNewCombinedHandler_Error tests the functionality of the NewCombinedHandler function with an error log.
-// This should output a text log, a JSON log, a text log with source and a JSON log with source from the logger set
-// using setupLoggerWithCombinedHandler.
+// This should output two text logs and two JSON logs from the logger set using setupLoggerWithCombinedHandler.
 func TestNewCombinedHandler_Error(t *testing.T) {
 	// Create a strings.Builder to capture the output
 	var outputStream strings.Builder
@@ -152,8 +150,8 @@ func TestNewCombinedHandler_Error(t *testing.T) {
 		[]string{
 			"level=ERROR msg=\"this is an error log\" logger=debugTextLogHandler",
 			"{\"level\":\"ERROR\",\"msg\":\"this is an error log\",\"logger\":\"infoJSONLogHandler\"}",
-			"level=ERROR source=/home/ksdfg/code/loggy/combined_handler_test.go:122 msg=\"this is an error log\" logger=warnTextLogHandler",
-			"{\"level\":\"ERROR\",\"source\":{\"function\":\"github.com/ksdfg/loggy_test.TestNewCombinedHandler_Error\",\"file\":\"/home/ksdfg/code/loggy/combined_handler_test.go\",\"line\":122},\"msg\":\"this is an error log\",\"logger\":\"errorJSONLogHandler\"}\n",
+			"level=ERROR msg=\"this is an error log\" logger=warnTextLogHandler",
+			"{\"level\":\"ERROR\",\"msg\":\"this is an error log\",\"logger\":\"errorJSONLogHandler\"}\n",
 		},
 		"\n",
 	)
