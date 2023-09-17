@@ -46,12 +46,14 @@ func ExampleNewCombinedHandler() {
 	// time=2023-09-17T17:44:01.603+05:30 level=ERROR source=/home/ksdfg/code/loggy/example_test.go:37 msg="this is an error log" logger=errorLogHandler
 }
 
-func ExampleNewStderrLogHandler() {
+func ExampleNewConsoleLogHandler() {
 	// Create a new slog.Handler that writes JSON text logs with source info to stderr
-	opts := loggy.StderrLogWriterOpts{
-		JSON: true, HandlerOptions: slog.HandlerOptions{AddSource: true, Level: slog.LevelDebug},
+	opts := loggy.ConsoleLogWriterOpts{
+		JSON:           true,
+		LogToStdout:    true,
+		HandlerOptions: slog.HandlerOptions{AddSource: true, Level: slog.LevelDebug},
 	}
-	handler := loggy.NewStderrLogHandler(opts)
+	handler := loggy.NewConsoleLogHandler(opts)
 
 	// Create a new logger with the above handler, and set it as the default
 	logger := slog.New(handler)
