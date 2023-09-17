@@ -67,11 +67,6 @@ func (h CombinedHandler) Handle(ctx context.Context, record slog.Record) error {
 // both the child handlers' attributes and the arguments.
 // The CombinedHandler owns the slice: it may retain, modify or discard it.
 func (h CombinedHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
-	// If no attributes are passed, return the receiver
-	if len(attrs) == 0 {
-		return h
-	}
-
 	// Create a new CombinedHandler
 	newHandler := CombinedHandler{}
 
@@ -93,11 +88,6 @@ func (h CombinedHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
 //
 // If the name is empty, WithGroup returns the receiver.
 func (h CombinedHandler) WithGroup(name string) slog.Handler {
-	// If the name is empty, return the receiver
-	if name == "" {
-		return h
-	}
-
 	// Create a new CombinedHandler
 	newHandler := CombinedHandler{}
 
